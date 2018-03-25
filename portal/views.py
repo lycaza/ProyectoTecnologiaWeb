@@ -4,14 +4,17 @@
 
 
 from django.http import HttpResponse
+from django.shortcuts import render
+from django.template import loader
+#from django.template import Context, loader
 
+def index(request):	
+	template = loader.get_template("index.html")
+	context = {
+        'materia':'Tecnologias Web',
+        'nombre':'Luis Ycaza',
+    }
 
-def index(request):
-    return HttpResponse("Prueba de funcionamiento")
-    
+	return HttpResponse(template.render(context,request))
 
-
-
-
-
-
+  
