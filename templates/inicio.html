@@ -1,0 +1,175 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">-->
+<!DOCTYPE html>
+<html>
+	<head>
+	   <title>Tecnologias Web</title>
+		<style>
+	       #map {
+	        height: 400px;
+	        width: 100%;
+	       }
+	    </style>
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<script src="js/jquery-3.3.1.min.js"></script>
+		
+		<script src="js/efectos.js"></script>
+
+		<script src="js/librerias/Flotr2-master/flotr2.js"></script>		
+		<script src="js/graficos.js"></script>
+		<script src="js/librerias/Chart.bundle.js"></script>
+		<script src="js/librerias/utils.js"></script>
+		<script src="js/librerias/analyser.js"></script>
+		
+		<script>
+			  
+		</script>
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBPMBhuvlJXlZlmcUu7E8gzVbSVsRTJpE&callback=initMap">
+		</script>
+
+		<style>
+			video { 
+			  /*-webkit-transform: scaleX(2); 
+			  -moz-transform: scaleX(2);
+			  */
+			  object-fit: fill;
+			}
+		</style>
+		<style>
+			ul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+				background-color: #333;
+			}
+
+			li {
+				float: left;
+			}
+
+			li a {
+				display: block;
+				color: white;
+				text-align: center;
+				padding: 14px 16px;
+				text-decoration: none;
+			}
+
+			li a:hover:not(.active) {
+				background-color: #111;
+			}
+
+			.active {
+				background-color: #4CAF50;
+			}
+		</style>
+
+	</head>
+	
+	<body onload="basic_pie(document.getElementById('content_grafico'),2)" >
+		<div id="c_menu" style="clear:both; float:left; width:98%;">
+		<ul>
+			<li><a class="active" href="#home">Inicio</a></li>
+			<li><a href="#news">Noticias</a></li>
+			<li><a href="#contact">Contacto</a></li>
+			<li><a href="#about">Acerca</a></li>
+			<li style="float:right"><a href="javascript:location.href='index.html'">Cerrar Sesión</a></li>
+			
+		</ul>
+		</div>
+		<div id="c_mapa" style="clear:both; float:left; width:47%; height:47%; margin:1%; border:1px solid green">
+			<h3>Google Maps</h3>
+			<div id="map"></div>
+			
+		</div>
+		
+		
+		<div id="c_video" style="float:left; width:47%; height:47%; margin:1%; border:1px solid green; overflow:auto">
+			<h3>Video</h3>
+			<div style="float:left; height:100%" id="sourcevid">
+				<!--https://www.youtube.com/watch?v=JhsrcaKbkOI-->
+				
+				<!--
+				<iframe frameborder="1" height="100%" width="100%" 
+					src="https://youtube.com/embed/Zq2IhadciVQ?autoplay=1&controls=0&showinfo=0&autohide=1">
+				</iframe>
+				-->
+				<video  autoplay="true" loop="true" width="600" height="100%" >
+					<source id="sourcevid" src='videos/barcelona_vs_santos.mp4' type='video/mp4'/>			
+				</video>
+			</div>
+		</div>
+		
+		
+		<div id="c_grafico" style="clear:both; float:left; width:47%; height:47%; margin:1%; border:1px solid green;">
+			<h3>Gr&aacute;ficos ( Se actualizan con los markers del mapa )</h3>
+			
+			<div class="content" id="content_grafico" style="height:100%;">
+				<!--div class="wrapper" style="max-width: 500px; margin: auto">
+					<canvas id="chart-0"></canvas>
+				</div>
+				<div class="toolbar">
+					<button onclick="togglePropagate(this)">Propagate</button>
+					<button onclick="toggleSmooth(this)">Smooth</button>
+					<button onclick="randomize(this)">Randomize</button>
+				</div>
+				<div id="chart-analyser" class="analyser"></div-->
+			</div>
+
+			
+		</div>
+		
+		<div id="c_canvas" style="float:left; width:47%; height:47%; margin:1%; border:1px solid green; overflow:auto">
+			<h3>Canvas</h3>
+			<canvas width="306" height="378" id="plano"></canvas> 
+
+			<script type="text/javascript">
+			
+				var cnv = document.getElementById("plano");
+				var ctx = cnv.getContext('2d');
+
+				var img = new Image();
+				img.src = 'http://i63.tinypic.com/rvm0lh.png';
+				img.onload = function() {ctx.drawImage(img,0,0);}
+
+				var coX = [153,234];
+				var coY = 110;
+
+				var tempX = 0, tempY = 0;
+				document.captureEvents(Event.MOUSEMOVE);
+				document.onmousemove = getMouseXY; 
+				function getMouseXY(e) {
+				  tempX = e.pageX;
+				  tempY = e.pageY;  
+				  if (tempX < 0){tempX = 0;}
+				  if (tempY < 0){tempY = 0;} 
+				  coX = [130+tempX/document.body.scrollWidth*30,
+				         210+tempX/document.body.scrollWidth*30];
+				  coY = 50+tempY/document.body.scrollHeight*100;
+				  return true;
+				}
+
+				setInterval(function(){dibujar();},60);
+
+				function dibujar(){
+				  ctx.clearRect(0,0,cnv.width,cnv.height);
+				  ctx.drawImage(img,0,0);
+				  for (i=0;i<2;i++){
+				    ctx.beginPath();
+				     ctx.arc(coX[i],coY,12,0,2*Math.PI);
+				    ctx.closePath();
+				    ctx.stroke();
+				    ctx.fillStyle = "#000";
+				    ctx.fill(); 
+				  }
+				}
+			
+			</script>
+			
+		</div>
+			
+			
+	
+	</body>
+</html>
