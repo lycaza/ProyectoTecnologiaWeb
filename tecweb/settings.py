@@ -63,10 +63,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.core.context_processors.csrf', # lycaza
             ],
         },
+       
     },
 ]
+
+CSRF_COOKIE_NAME= 'cookies_app' # lycaza
+CSRF_COOKIE_DOMAIN= 'localhost' # lycaza
 
 WSGI_APPLICATION = 'tecweb.wsgi.application'
 

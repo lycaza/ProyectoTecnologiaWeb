@@ -15,14 +15,18 @@
 	<script src="{% static 'js/funciones.js' %}"></script>
 	<link href="{% static 'css/estilo_login.css' %}" rel="stylesheet" type="text/css" />
 	
-			  
+	{% csrf_token %}
+	<script type="text/javascript">
+		// using jQuery
+		var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+	</script>	
   </head>
   
   <body onload="">
   		<header>
 			     <hgroup></hgroup>
 			     
-			     <form method="post" class="contact_form" action="" id="contact_form" onsubmit=""> 				     	
+	<form method="post" class="contact_form" action="{% url 'autentica' %}" id="contact_form">{% csrf_token %}				     	
 					     	<input type="hidden" name="accion" value="login" required="true" />
 					     	<br/><br/><br/>
 					     	<br/><br/><br/><br/><br/><br/>	     	
@@ -38,7 +42,7 @@
 									     		
 									     		<li>
 									     			<div align="center" id="progreso">		     
-						     		     				<button class="submit" type="button" onclick="login();">Ingresar</button>
+						     		     				<button class="submit" type="submit" >Ingresar</button>
 						     						</div>
 						      					</li>				     						     		
 									     	</ul> 
