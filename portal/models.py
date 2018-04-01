@@ -1,13 +1,8 @@
 from django.db import models
-
-# Create your models here.
-
-
 import sqlite3
 
 
-
- class Usuario(object):
+class Usuario(object):
 
     def __init__(self, id = None, username = None):
         self.id = id

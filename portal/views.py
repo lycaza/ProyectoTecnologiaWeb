@@ -4,7 +4,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
-#from django.template import Context, loader
+from portal.dao import *
+
 #from django.views.decorators.csrf import csrf_protect
 #from django.views.decorators.csrf import ensure_csrf_cookie
 
@@ -18,13 +19,19 @@ def login(request):
 	return HttpResponse(template.render())
 
 @csrf_exempt
-def autentica(request):
-	
+def autentica(request):	
 	username = request.POST['usuario']
 	clave = request.POST['clave']
 	print(username)
 	print(clave)
+	
+	conn = create_connection('proyecto.sqlite3')
+	if verifica(conn,username,clave):
+		template = loader.get_template("inicio.html")
+		return HttpResponse(template.render())
+	else:
+		print("error")
+	conn.close()
 
-	#return render(request, 'inicio.html', {'form':form})
-	template = loader.get_template("inicio.html")	
-	return HttpResponse(template.render())
+	#return render(request, 'inicio.html', {'form':form})		
+	
