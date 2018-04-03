@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import loader
 from portal.dao import *
+from django.http import HttpResponseRedirect
 
 #from django.views.decorators.csrf import csrf_protect
 #from django.views.decorators.csrf import ensure_csrf_cookie
@@ -27,11 +28,12 @@ def autentica(request):
 	
 	conn = create_connection('proyecto.sqlite3')
 	if verifica(conn,username,clave):
-		template = loader.get_template("inicio.html")
-		return HttpResponse(template.render())
+		return HttpResponseRedirect("principal")		
 	else:
 		print("error")
 	conn.close()
-
 	#return render(request, 'inicio.html', {'form':form})		
-	
+
+def principal(request):	
+	template = loader.get_template("principal.html")	
+	return HttpResponse(template.render())

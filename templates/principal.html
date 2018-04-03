@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	   <title>Tecnologias Web</title>
+
+		{% load static %}
+		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+		<link href="{% static 'css/bootstrap-theme.min.css' %}" rel="stylesheet" type="text/css" />
+		<script src="{% static 'js/funciones.js' %}"></script>
+
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBPMBhuvlJXlZlmcUu7E8gzVbSVsRTJpE&callback=initMap">
+		</script>
+	</head>
+
+	<body onload="mostrarMapa();">
+
+		<!-- Menu -->
+		<header>
+			<div class="container">
+				<nav class="navbar navbar-inverse">
+				  <div class="container-fluid">
+				    <div class="navbar-header">
+				      <a class="navbar-brand" href="#">Tecnolog&iacute;as Web</a>
+				    </div>
+				    <ul class="nav navbar-nav">
+				      <li><a href="/portal">Inicio</a></li>
+				      <li class="active"><a href="#">Dashboard</a></li>
+				      <li><a href="">Contactos</a></li>
+				    </ul>
+				    <ul class="nav navbar-nav navbar-right">
+				      <li><a href="login"><span class="glyphicon glyphicon-log-in"></span> Cerrar Sesi&oacute;n</a></li>
+				    </ul>
+				  </div>
+				</nav>
+			</div>
+		</header>
+
+		<!-- Pagina Dashboard -->
+		<section id="dashboard">
+			<div class="container">
+			  <div class="row">
+
+			  	<!-- Tabla de agencias -->
+			    <div class="col-sm-6" >
+			    	<div class="table-responsive" >           
+					  <table class="table">
+					    <thead>
+					      <tr>
+					        <th>#</th>
+					        <th>Agencia</th>
+					        <th>Venta Actual</th>					        
+					      </tr>
+					    </thead>
+					    <tbody>
+					      <tr>
+					        <td>1</td>
+					        <td><a href="">Ambato</a></td>
+					        <td>500000</td>					        
+					      </tr>
+					    </tbody>
+					  </table>
+					</div>
+			    </div>
+
+			    <!-- Google Maps -->
+			    <div class="col-sm-6">
+			    	<div id='mapa' style='width: 550px; height: 300px;'> 
+
+			    	</div>
+			    </div>
+			  </div>
+
+			  <div class="row">
+			    <div class="col-sm-6">Graficas</div>
+			    <div class="col-sm-6">Indicadores</div>			    
+			  </div>			 
+			</div>
+		</section>
+
+
+		<!-- Pagina Contactos -->
+		<section id="contactos" style="display: none">			
+		</section>
+
+		<footer>
+			<div class="container">			  
+			  <div class="panel panel-default">			    
+			    <div class="panel-footer"><strong>Promoci&oacute;n XIX - Paralelo 2</strong></div>
+			  </div>
+			</div>
+		</footer>
+	</body>
+</html>
