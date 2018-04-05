@@ -6,13 +6,19 @@
 		{% load static %}
 		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
 		<link href="{% static 'css/bootstrap-theme.min.css' %}" rel="stylesheet" type="text/css" />
-		<script src="{% static 'js/funciones.js' %}"></script>
+		<link href="{% static 'css/principal.css' %}" rel="stylesheet" type="text/css" />
 
+		<script src="{% static 'js/funciones.js' %}"></script>
+		<script src="{% static 'js/librerias/Flotr2-master/flotr2.min.js' %}"></script>
 		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBPMBhuvlJXlZlmcUu7E8gzVbSVsRTJpE&callback=initMap">
 		</script>
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	    <script type="text/javascript">
+	      google.charts.load('current', {'packages':['gauge']});
+	    </script>
 	</head>
 
-	<body onload="mostrarMapa();">
+	<body onload="valoresIniciales();">
 
 		<!-- Menu -->
 		<header>
@@ -54,7 +60,7 @@
 					    <tbody>
 					      <tr>
 					        <td>1</td>
-					        <td><a href="">Ambato</a></td>
+					        <td><a href="javascript:valoresAgencia();">Ambato</a></td>
 					        <td>500000</td>					        
 					      </tr>
 					    </tbody>
@@ -64,15 +70,19 @@
 
 			    <!-- Google Maps -->
 			    <div class="col-sm-6">
-			    	<div id='mapa' style='width: 550px; height: 300px;'> 
-
-			    	</div>
+			    	<div id='mapa' class='recuadro'></div>
 			    </div>
 			  </div>
 
+			  <br>
 			  <div class="row">
-			    <div class="col-sm-6">Graficas</div>
-			    <div class="col-sm-6">Indicadores</div>			    
+			    <div class="col-sm-6">
+			    	<div id='graficas' class='inferior'></div>
+			    </div>
+
+			    <div class="col-sm-6">
+			    	<div align="center" id='indicadores' class='inferior'></div>
+			    </div>			    
 			  </div>			 
 			</div>
 		</section>
