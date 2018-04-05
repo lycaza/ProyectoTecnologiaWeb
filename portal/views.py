@@ -51,3 +51,17 @@ def indicador(request):
 	conn.close()
 
 	return HttpResponse(porcentaje)
+
+def ventas_categorias(request):	
+	conn = create_connection('proyecto.sqlite3')
+	data= obtener_ventas_categorias(conn)	
+	conn.close()
+
+	return HttpResponse(data)
+
+def obtener_agencias(request):	
+	conn = create_connection('proyecto.sqlite3')
+	data= obtener_lista_agencias(conn)	
+	conn.close()
+
+	return HttpResponse(data)

@@ -16,9 +16,9 @@ function login(){
 
 
 function valoresIniciales(){	
-	barras(document.getElementById("graficas"),false);	
-	obtener_ventas_agencias();
-	
+  obtenerAgencias(); // con datos
+	obtener_ventas_categorias(false);	// con datos
+	obtener_ventas_agencias(); // con datos	
 	mostrarMapa();
 }
 
@@ -26,8 +26,30 @@ function valoresIniciales(){
 function valoresAgencia(agencia){ 
 	document.getElementById('graficas').className= "recuadro";
 	document.getElementById('indicadores').className= "recuadro";	
+
 	radar(document.getElementById('graficas'));
-	obtener_indicador(agencia);
+	obtener_indicador(agencia); // con datos
+}
+
+
+
+function obtenerAgencias(){
+    var request;    
+    if (window.XMLHttpRequest) {
+        request = new window.XMLHttpRequest();
+    } 
+    else {
+        request = new window.ActiveXObject("Microsoft.XMLHTTP");
+    }
+    
+    request.open("GET", "obtener_agencias", true);
+    request.send();
+    
+    request.onreadystatechange = function(){
+        if (request.readyState == 4 && request.status == 200){
+            document.getElementById("tabla_agencias").innerHTML= request.responseText;
+        }
+    }
 }
 
 
@@ -61,59 +83,47 @@ function mostrarMapa(){
 }
 
 
-
-function barras(container, horizontal) {
-	var c1 = [
-    	[1,30],
-    	[2,15],
-    	[3,20],
-    	[4,22],
-    	[5,12],
-       ];
-    var c2 = [
-    	[1,30],
-    	[2,10],
-    	[3,20],
-    	[4,22],
-    	[5,12],
-       ];
-    var c3 = [
-    	[1,30],
-    	[2,10],
-    	[3,20],
-    	[4,22],
-    	[5,12],
-       ];
-   
+function obtener_ventas_categorias(horizontal){
+    var request;    
+    if (window.XMLHttpRequest) {
+        request = new window.XMLHttpRequest();
+    } 
+    else {
+        request = new window.ActiveXObject("Microsoft.XMLHTTP");
+    }
     
-    // var data= obtener_ventas_categoria();
-    var data= [
-	    { data : c1, label : 'Categoria 1' },
-	    { data : c2, label : 'Categoria 2' },
-	    { data : c3, label : 'Categoria 3' }
-	];
+    request.open("GET", "ventas_categorias", true);
+    request.send();
+    
+    request.onreadystatechange = function(){
+        if (request.readyState == 4 && request.status == 200){
+            barras(document.getElementById("graficas"),horizontal,request.responseText);
+        }
+    }
+}
 
-    var graph = Flotr.draw(
+function barras(container, horizontal,data) { 
+	var graph = Flotr.draw(
 	  	container,
-	  	data, 
-		{
-	    	legend : {
-	        	backgroundColor : '#D2E8FF', // Light blue 
-	        	position : 'ne',/*se-nw*/
-	    	},
-		    bars : {
-		      show : true,
-		      stacked : true,
-		      horizontal : horizontal,
-		      barWidth : 0.6,
-		      lineWidth : 1	,
-		      shadowSize : 0
-		    },
-		    grid : {
-		      verticalLines : horizontal,
-		      horizontalLines : !horizontal
-		    }
-	  	}
+	  	eval(data.toString()), 
+  		{
+  	    	legend : {
+  	        	backgroundColor : '#D2E8FF', // Light blue 
+  	        	position : 'nw',/*se-nw*/
+  	    	},
+  		    bars : {
+  		      show : true,
+  		      stacked : true,
+  		      horizontal : horizontal,
+  		      barWidth : 0.6,
+  		      lineWidth : 1	,
+  		      shadowSize : 0
+  		    },
+  		    grid : {
+  		      verticalLines : horizontal,
+  		      horizontalLines : !horizontal
+  		    }
+  	  	}
   	);
 }
 
