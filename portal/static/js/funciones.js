@@ -17,17 +17,17 @@ function login(){
 
 function valoresIniciales(){	
 	barras(document.getElementById("graficas"),false);	
-	pie(document.getElementById("indicadores"));
+	obtener_ventas_agencias();
 	
 	mostrarMapa();
 }
 
 
-function valoresAgencia(){
+function valoresAgencia(agencia){ 
 	document.getElementById('graficas').className= "recuadro";
 	document.getElementById('indicadores').className= "recuadro";	
 	radar(document.getElementById('graficas'));
-	google.charts.setOnLoadCallback(drawChart("",30,30000,10));	
+	obtener_indicador(agencia);
 }
 
 
@@ -148,27 +148,31 @@ function radar(container) {
 
 
 
-function pie(container) {
 
-  var
-    d1 = [[0, 50000]],
-    d2 = [[0, 33000]],
-    d3 = [[0, 21000.03]],
-    d4 = [[0, 53000.50]],
-    graph;
-  
+function obtener_ventas_agencias(){
+    var request;    
+    if (window.XMLHttpRequest) {
+        request = new window.XMLHttpRequest();
+    } 
+    else {
+        request = new window.ActiveXObject("Microsoft.XMLHTTP");
+    }
+    
+    request.open("GET", "ventas_agencias", true);
+    request.send();
+    
+    request.onreadystatechange = function(){
+        if (request.readyState == 4 && request.status == 200){
+            pie(document.getElementById("indicadores"),request.responseText);
+        }
+    }
+}
+
+function pie(container,data) {    
   graph = Flotr.draw(
-  	container, [
-	    { data : d1, label : 'Agencia 1' },
-	    { data : d2, label : 'Agencia 2' },
-	    { data : d3, label : 'Agencia 3',
-	      pie : {
-	        explode : 50
-	      }
-	    },
-	    { data : d4, label : 'Agencia 4' }
-  	], 
-  	{
+  	container, 
+    eval(data.toString()),
+    {
     HtmlText : false,
     grid : {
       verticalLines : false,
@@ -191,17 +195,36 @@ function pie(container) {
 
 
 
-function drawChart(lbldiaactual,diaactual,diasacum,totalmes) {
+function obtener_indicador(agencia){
+    var request;    
+    if (window.XMLHttpRequest) {
+        request = new window.XMLHttpRequest();
+    } 
+    else {
+        request = new window.ActiveXObject("Microsoft.XMLHTTP");
+    }
+    
+    request.open("GET", "indicador?agencia="+agencia, true);
+    request.send();
+    
+    request.onreadystatechange = function(){
+        if (request.readyState == 4 && request.status == 200){
+            google.charts.setOnLoadCallback(drawChart(request.responseText*1)); 
+        }
+    }
+}
+
+function drawChart(porcentaje) {
 
         var data = google.visualization.arrayToDataTable([
           ['Label', 'Value'],
           //['Dia '+lbldiaactual, diaactual],
           //['Dias Acum.', diasacum],
-          ['Total Mes', totalmes]
+          ['(%)', porcentaje]
         ]);
 
         var options = {
-          width: 500, height: 250,
+          width: 400, height: 250,
           redFrom: 0, redTo: 20,
           yellowFrom:20, yellowTo: 75,
           greenFrom:75, greenTo: 100,

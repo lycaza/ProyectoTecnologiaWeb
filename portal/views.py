@@ -23,9 +23,7 @@ def login(request):
 def autentica(request):	
 	username = request.POST['usuario']
 	clave = request.POST['clave']
-	print(username)
-	print(clave)
-	
+		
 	conn = create_connection('proyecto.sqlite3')
 	if verifica(conn,username,clave):
 		return HttpResponseRedirect("principal")		
@@ -37,3 +35,19 @@ def autentica(request):
 def principal(request):	
 	template = loader.get_template("principal.html")	
 	return HttpResponse(template.render())
+
+def ventas_agencias(request):	
+	conn = create_connection('proyecto.sqlite3')
+	data= obtener_ventas_agencias(conn)	
+	conn.close()
+
+	return HttpResponse(data)
+
+def indicador(request):	
+	agencia = request.GET['agencia']
+
+	conn = create_connection('proyecto.sqlite3')
+	porcentaje= obtener_indicador(conn,agencia)	
+	conn.close()
+
+	return HttpResponse(porcentaje)
