@@ -19,7 +19,7 @@ function valoresIniciales(){
   obtenerAgencias(); // con datos
 	obtener_ventas_categorias(false);	// con datos
 	obtener_ventas_agencias(); // con datos	
-	mostrarMapa();
+	mostrarMapaInicial();
 }
 
 
@@ -29,6 +29,7 @@ function valoresAgencia(agencia){
 
 	radar(document.getElementById('graficas'));
 	obtener_indicador(agencia); // con datos
+	reloadMarkers(agencia);
 }
 
 
@@ -52,36 +53,123 @@ function obtenerAgencias(){
     }
 }
 
+/**********************************************************************************************************/
+/**********************************************************************************************************/
+/************************************************GOOGLE MAPS***********************************************/
+/**********************************************************************************************************/
+/**********************************************************************************************************/
+var latitud_inicial = -2.1842396;
+var longitud_inicial = -79.8794098;
+var punto = ['ESPOL MSIG', latitud_inicial, longitud_inicial, 4];
+var myOptions;
+var map;
+var markers=[];
+var contenedor_mapa;
+///var inicio_mapa=true;
 
-function mostrarMapa(){
+var arreglo_inicial = [
+    ['Espol MSIG XIX', latitud_inicial, longitud_inicial, 1]
+];
+
+var arreglo_final = [
+    ['Bondi Beach', latitud_inicial, longitud_inicial-0.01, 4]
+    , ['Coogee Beach', latitud_inicial, longitud_inicial-0.02, 5]
+    , ['Cronulla Beach', latitud_inicial, longitud_inicial-0.03, 3]
+    , ['Manly Beach', latitud_inicial, longitud_inicial-0.04, 2]
+    ///, ['Espol MSIG XIX', latitud_inicial, longitud_inicial-0.05, 1]
+];
+
+function mostrarMapaInicial(){
 	// Creamos el punto a partir de las coordenadas:
-	var punto = new google.maps.LatLng(-2.0297827,-79.913673);
+	contenedor_mapa = document.getElementById("mapa");
+	punto = new google.maps.LatLng(latitud_inicial,longitud_inicial);
 	 
 	// Configuramos las opciones
-	var myOptions = {
-	    zoom: 15, center: punto, mapTypeId: google.maps.MapTypeId.ROADMAP
+	myOptions = {
+	    zoom: 13
+		, center: new google.maps.LatLng(latitud_inicial,longitud_inicial)
+		, mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
 	 
 	// Creamos el mapa
-	document.getElementById("mapa").innerHTML= "";
-	var map = new google.maps.Map(document.getElementById("mapa"),  myOptions);
-	 
-	// Marcador inicial
-	var marker = new google.maps.Marker({
-	    position:punto,
-	    map: map,
-	    title:"Título del mapa"
-	});
-
-
-	punto = new google.maps.LatLng(-2.0328285,-79.9139304);
-	marker.push(new google.maps.Marker({
-		map: map,
-		position: punto,
-		title:"Título del mapa"
-	}));	
+	contenedor_mapa.innerHTML= "";
+	map = new google.maps.Map(contenedor_mapa,  myOptions);
+		
+	setMarkers(arreglo_inicial); 
 }
 
+function reloadMarkers(agencia) {
+ 
+    // Loop through markers and set map to null for each
+    for (var i=0; i<markers.length; i++) {
+     
+        markers[i].setMap(null);
+    }
+    
+    // Reset the markers array
+    markers = [];
+    
+    // Call set markers to re-add markers
+    ////setMarkers(arreglo_final);
+	obtenerClientes(agencia);
+}
+
+function setMarkers(locations) {
+
+    for (var i = 0; i < locations.length; i++) {
+        var beach = locations[i];
+        var myLatLng = new google.maps.LatLng(parseFloat(beach[1]), parseFloat(beach[2]));
+        var marker = new google.maps.Marker({
+			///center: new google.maps.LatLng(0.8673074,-79.8581815),
+            position: myLatLng,
+            map: map,
+            animation: google.maps.Animation.DROP,
+            title: beach[0],
+            zIndex: beach[3]
+        });
+        
+        // Push marker to markers array
+        markers.push(marker);
+    }
+}
+
+function obtenerClientes(agencia){
+    var request;    
+    if (window.XMLHttpRequest) {
+        request = new window.XMLHttpRequest();
+    } 
+    else {
+        request = new window.ActiveXObject("Microsoft.XMLHTTP");
+    }
+    
+	
+    request.open("GET", "obtener_clientes?agencia="+agencia, true);
+    request.send();
+    
+    request.onreadystatechange = function(){
+        if (request.readyState == 4 && request.status == 200){
+			var arreglo_final = [];
+			var arreglo_final = JSON.parse("[" + request.responseText + "]");
+            ///console.log(arreglo_final);
+			setMarkers(arreglo_final);
+			nuevasPosiciones = {
+				zoom: 6
+				, center: new google.maps.LatLng(-1.2570576,-78.6567243)
+				, mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+			map.setOptions(nuevasPosiciones);
+        }
+    }
+}
+
+
+
+
+/**********************************************************************************************************/
+/**********************************************************************************************************/
+/********************************************FIN GOOGLE MAPS***********************************************/
+/**********************************************************************************************************/
+/**********************************************************************************************************/
 
 function obtener_ventas_categorias(horizontal){
     var request;    

@@ -65,3 +65,12 @@ def obtener_agencias(request):
 	conn.close()
 
 	return HttpResponse(data)
+	
+def obtener_clientes(request):	
+	agencia = request.GET['agencia']
+	
+	conn = create_connection('proyecto.sqlite3')
+	data= obtener_lista_clientes(conn,agencia)	
+	conn.close()
+
+	return HttpResponse(data)
