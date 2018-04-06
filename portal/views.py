@@ -65,3 +65,11 @@ def obtener_agencias(request):
 	conn.close()
 
 	return HttpResponse(data)
+
+def actual_estimado_categorias(request):	
+	agencia = request.GET['agencia']
+	conn = create_connection('proyecto.sqlite3')
+	data= obtener_actual_estimado_categorias(conn,agencia)	
+	conn.close()
+
+	return HttpResponse(data)

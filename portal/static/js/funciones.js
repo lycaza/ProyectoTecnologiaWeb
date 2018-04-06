@@ -27,7 +27,8 @@ function valoresAgencia(agencia){
 	document.getElementById('graficas').className= "recuadro";
 	document.getElementById('indicadores').className= "recuadro";	
 
-	radar(document.getElementById('graficas'));
+	//radar(document.getElementById('graficas'));
+  obtener_actual_estimado_categorias(agencia);
 	obtener_indicador(agencia); // con datos
 }
 
@@ -129,30 +130,38 @@ function barras(container, horizontal,data) {
 
 
 
-function radar(container) {
 
-  // Fill series s1 and s2.
-  var
-    s1 = { label : ' Actual', data : [[0, 3], [1, 8], [2, 5], [3, 5], [4, 3], [5, 9]] },  
-    s2 = { label : ' Anterior', data : [[0, 8], [1, 7], [2, 8], [3, 2], [4, 4], [5, 7]] },
-    graph, ticks;
-
-  // Radar Labels
-  ticks = [
-    [0, "Statutory"],
-    [1, "External"],
-    [2, "Videos"],
-    [3, "Yippy"],
-    [4, "Management"],
-    [5, "oops"]
-  ];
+function obtener_actual_estimado_categorias(agencia){ 
+    var request;    
+    if (window.XMLHttpRequest) {
+        request = new window.XMLHttpRequest();
+    } 
+    else {
+        request = new window.ActiveXObject("Microsoft.XMLHTTP");
+    }
     
-  // Draw the graph.
-  graph = Flotr.draw(container, [ s1,s2 ], {
-    radar : { show : true}, 
-    grid  : { circular : true, minorHorizontalLines : false}, 
-    yaxis : { min : 0, max : 10, minorTickFreq : 2}, 
-    xaxis : { ticks : ticks}
+    request.open("GET", "actual_estimado_categorias?agencia="+agencia, true);
+    request.send();
+    
+    request.onreadystatechange = function(){
+        if (request.readyState == 4 && request.status == 200){
+            basic_legend(document.getElementById("graficas"),request.responseText);
+        }
+    }
+}
+
+
+function basic_legend(container,data) {
+  
+
+  // Draw graph
+  graph = Flotr.draw(container, eval(data.toString()), {
+    legend : {
+      position : 'nw',            // Position the legend 'south-east'.
+      //labelFormatter : labelFn,   // Format the labels.
+      backgroundColor : '#D2E8FF' // A light blue background color.
+    },
+    HtmlText : false
   });
 }
 
@@ -202,7 +211,6 @@ function pie(container,data) {
   });
 
 }
-
 
 
 function obtener_indicador(agencia){

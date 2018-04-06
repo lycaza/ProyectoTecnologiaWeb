@@ -11,6 +11,7 @@ urlpatterns = [
    	path('indicador', views.indicador, name='indicador'),   	
    	path('ventas_categorias', views.ventas_categorias, name='ventas_categorias'),
    	path('obtener_agencias', views.obtener_agencias, name='obtener_agencias'),   
+   	path('actual_estimado_categorias', views.actual_estimado_categorias, name='actual_estimado_categorias'),   
     #url(r'^path/to/url', TemplateView.as_view(template_name='paginas/index.html')),
 ]
 

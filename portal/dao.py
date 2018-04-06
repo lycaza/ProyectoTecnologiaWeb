@@ -67,6 +67,7 @@ def obtener_categorias(conexion):
 		for row in cursor:
 			salida+=str(row[0])+","
 		
+		salida= salida[:-3]
 		return salida
 	except Error as e:
 		print(e)
@@ -106,7 +107,7 @@ def obtener_ventas_categorias(conexion):
 
 def obtener_lista_agencias(conexion):
 	try:
-		cursor = conexion.execute(" select va.agencia,sum(va.valor_anterior_venta),sum(va.valor_actual_venta)"+
+		cursor = conexion.execute(" select va.agencia,sum(va.valor_anterior_venta),sum(va.valor_actual_venta),sum(va.valor_actual_estimado)"+
 								  " from VentasAgencias va"+
 								  "	group by va.agencia"+								  
 								  " order by va.agencia ")
@@ -117,13 +118,64 @@ def obtener_lista_agencias(conexion):
 			salida+="<tr>"			
 			salida+="<td>"+str(i)+"</td>"
 			salida+="<td><a href='javascript:valoresAgencia(\""+str(row[0])+"\");'>"+str(row[0])+"</a></td>"
-			salida+="<td>"+str(row[1])+"</td>"
-			salida+="<td>"+str(row[2])+"</td>"
+			salida+="<td style='text-align:right'>{0:.2f}</td>".format(row[1])
+			salida+="<td style='text-align:right'>{0:.2f}</td>".format(row[2])
+			salida+="<td style='text-align:right'>{0:.2f}</td>".format(row[3])
 			salida+="</tr>"
 
 			i= i+1
 		
 		return salida
+	except Error as e:
+		print(e)
+	return ""
+
+
+
+
+def obtener_actual_estimado_categorias(conexion,agencia):
+	try:
+		#categorias= categorias[:-3]
+		
+		
+		#anterior
+		data= "["
+		cursor = conexion.execute(" select va.categoria,sum(va.valor_anterior_venta),sum(va.valor_actual_venta),sum(va.valor_actual_estimado)"+
+								  " from VentasAgencias va where va.agencia='"+agencia+"'"+										  				  
+								  " group by va.categoria order by va.categoria ")
+		j=1
+		data+="{data:["
+		
+		for row in cursor:
+			data+="["+str(j)+","+str(row[1])+"],"			
+			j= j+1			
+		data+="],label:'Venta Anterior'},"
+
+		#actual
+		cursor = conexion.execute(" select va.categoria,sum(va.valor_anterior_venta),sum(va.valor_actual_venta),sum(va.valor_actual_estimado)"+
+								  " from VentasAgencias va where va.agencia='"+agencia+"'"+										  				  
+								  " group by va.categoria order by va.categoria ")
+		j=1
+		data+="{data:["
+		for row in cursor:
+			data+="["+str(j)+","+str(row[2])+"],"
+			j= j+1			
+		data+="],label:'Venta Actual'},"
+
+		#estimado
+		cursor = conexion.execute(" select va.categoria,sum(va.valor_anterior_venta),sum(va.valor_actual_venta),sum(va.valor_actual_estimado)"+
+								  " from VentasAgencias va where va.agencia='"+agencia+"'"+										  				  
+								  " group by va.categoria order by va.categoria ")
+		j=1
+		data+="{data:["
+		for row in cursor:
+			data+="["+str(j)+","+str(row[3])+"],"
+			j= j+1			
+		data+="],label:'Venta Estimada'}"
+		data+="]"
+
+		print(data)
+		return data
 	except Error as e:
 		print(e)
 	return ""
