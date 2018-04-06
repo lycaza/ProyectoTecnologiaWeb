@@ -55,8 +55,7 @@ def obtener_indicador(conexion,agencia):
 	except Error as e:
 		print(e)
 	return 0
-	
-<<<<<<< HEAD
+
 def obtener_lista_clientes(conexion,agencia):	
 	try:		
 		maximo=100
@@ -89,7 +88,7 @@ def obtener_lista_clientes(conexion,agencia):
 		print(e)
 	return 0
 			
-=======
+
 def obtener_indicador_2(conexion,agencia):	
 	try:		
 		cursor= conexion.execute("SELECT (((sum(va.valor_actual_venta)/sum(va.valor_actual_estimado))*100)-100) from VentasAgencias va where va.agencia='"+agencia+"' ")
@@ -99,8 +98,7 @@ def obtener_indicador_2(conexion,agencia):
 	except Error as e:
 		print(e)
 	return 0
-	
->>>>>>> 0eda2c538def9493a2e6111fc395cc208ec3a799
+
         
 def obtener_categorias(conexion):
 	try:
