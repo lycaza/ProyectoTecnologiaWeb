@@ -51,6 +51,16 @@ def indicador(request):
 	conn.close()
 
 	return HttpResponse(porcentaje)
+	
+def indicador_2(request):	
+	agencia = request.GET['agencia']
+
+	conn = create_connection('proyecto.sqlite3')
+	porcentaje_2= obtener_indicador_2(conn,agencia)	
+	print(porcentaje_2)
+	conn.close()
+	
+	return HttpResponse(porcentaje_2)
 
 def ventas_categorias(request):	
 	conn = create_connection('proyecto.sqlite3')
