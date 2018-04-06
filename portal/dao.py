@@ -55,7 +55,50 @@ def obtener_indicador(conexion,agencia):
 	except Error as e:
 		print(e)
 	return 0
-	
+
+def obtener_lista_clientes(conexion,agencia):	
+	try:		
+		maximo=100
+		cursor= conexion.execute(" select vc.nombre, vc.valor_actual, vc.latitud, vc.longitud "
+									+ " from VentasClientes vc "
+									+ " where vc.agencia='" + agencia + "' "
+									+ " order by 1,2,3,4 asc "
+									+ " limit 1, " + str(maximo))
+		i=1
+		j=maximo
+		salida=""
+		
+		for row in cursor:
+			salida+="["
+			salida+="\""+str(row[0]) + "=>$" + str(row[1]) +"\""
+			##salida+=","+str(row[1])
+			salida+=",\""+str(row[2])+"\""
+			salida+=",\""+str(row[3])+"\""
+			salida+=","+str(j)
+			if i < maximo:
+				salida+="],"
+			else:
+				salida+="]"
+				
+			i=i+1
+			j=j-1
+		##salida+="}"	
+		return salida
+	except Error as e:
+		print(e)
+	return 0
+			
+
+def obtener_indicador_2(conexion,agencia):	
+	try:		
+		cursor= conexion.execute("SELECT (((sum(va.valor_actual_venta)/sum(va.valor_actual_estimado))*100)-100) from VentasAgencias va where va.agencia='"+agencia+"' ")
+		porcentaje_2= cursor.fetchone()[0]
+		
+		return porcentaje_2
+	except Error as e:
+		print(e)
+	return 0
+
         
 def obtener_categorias(conexion):
 	try:
