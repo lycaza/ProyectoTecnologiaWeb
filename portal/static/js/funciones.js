@@ -294,31 +294,37 @@ function pie(container,data) {
 
 
 function obtener_indicador(agencia){
-    var request;    
+    var request, request_2;    
     if (window.XMLHttpRequest) {
         request = new window.XMLHttpRequest();
+		request_2 = new window.XMLHttpRequest();
     } 
     else {
         request = new window.ActiveXObject("Microsoft.XMLHTTP");
+		request_2 = new window.ActiveXObject("Microsoft.XMLHTTP");
     }
     
     request.open("GET", "indicador?agencia="+agencia, true);
+	request_2.open("GET", "indicador_2?agencia="+agencia, true);
     request.send();
+    request_2.send();
     
     request.onreadystatechange = function(){
-        if (request.readyState == 4 && request.status == 200){
-            google.charts.setOnLoadCallback(drawChart(request.responseText*1)); 
-        }
+		request_2.onreadystatechange = function(){
+			//if (request.readySta_te == 4 && request.status == 200){
+				google.charts.setOnLoadCallback(drawChart(request.responseText*1, request_2.responseText*1));
+			//}
+		}
     }
 }
 
-function drawChart(porcentaje) {
+function drawChart(porcentaje, porcentaje_2) {
 
         var data = google.visualization.arrayToDataTable([
           ['Label', 'Value'],
-          //['Dia '+lbldiaactual, diaactual],
+          ['(% Estimado)', porcentaje_2],
           //['Dias Acum.', diasacum],
-          ['(%)', porcentaje]
+          ['(% Años)', porcentaje]
         ]);
 
         var options = {
