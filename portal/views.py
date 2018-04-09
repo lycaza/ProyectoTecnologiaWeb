@@ -7,9 +7,6 @@ from django.template import loader
 from portal.dao import *
 from django.http import HttpResponseRedirect
 
-#from django.views.decorators.csrf import csrf_protect
-#from django.views.decorators.csrf import ensure_csrf_cookie
-
 def index(request):	
 	template = loader.get_template("index.html")	
 	return HttpResponse(template.render())
@@ -19,22 +16,32 @@ def login(request):
 	template = loader.get_template("login.html")	
 	return HttpResponse(template.render())
 
+def logout(request):	
+	request.session['usuario']= ""
+	request.session['clave']= ""
+	return HttpResponseRedirect("login")
+
 @csrf_exempt
 def autentica(request):	
 	username = request.POST['usuario']
 	clave = request.POST['clave']
-		
+
 	conn = create_connection('proyecto.sqlite3')
 	if verifica(conn,username,clave):
+		request.session['usuario']= username
+		request.session['clave']= clave
 		return HttpResponseRedirect("principal")		
 	else:
-		print("error")
+		return HttpResponse("<h4>Error de autenticaci&oacute;n!</h4> <a href='login'>[Regresar]</a>")
 	conn.close()
-	#return render(request, 'inicio.html', {'form':form})		
+		
 
 def principal(request):	
-	template = loader.get_template("principal.html")	
-	return HttpResponse(template.render())
+	if request.session['usuario']!="":
+		template = loader.get_template("principal.html")	
+		return HttpResponse(template.render())
+	else:
+		return HttpResponse("<h4>No hay sesiones activas!</h4> <a href='login'>[Regresar]</a>")
 
 def ventas_agencias(request):	
 	conn = create_connection('proyecto.sqlite3')

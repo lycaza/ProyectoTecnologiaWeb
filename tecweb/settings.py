@@ -127,8 +127,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-#    '/home/lycaza/Datos/Proyectos/Django/tecweb/portal/static/',
-###'C:\Users\starme04\Documents\GitHub\ProyectoTecnologiaWeb\tecweb\portal\static',   
-os.path.join(BASE_DIR, 'portal\static'),
+    '/home/lycaza/Datos/Proyectos/Django/tecweb/portal/static/',
+    ###'C:\Users\starme04\Documents\GitHub\ProyectoTecnologiaWeb\tecweb\portal\static',   
+    #os.path.join(BASE_DIR, 'portal\static'),
 )
 ##STATICFILES_DIRS = [os.path.join(ROOT_PATH, 'static')]

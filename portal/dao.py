@@ -1,4 +1,3 @@
-#from models import Usuario
 import sqlite3
 from sqlite3 import Error
 
@@ -48,13 +47,16 @@ def obtener_ventas_agencias(conexion):
 
 def obtener_indicador(conexion,agencia):	
 	try:		
-		cursor= conexion.execute("SELECT (((sum(va.valor_actual_venta)/sum(va.valor_anterior_venta))*100)-100) from VentasAgencias va where va.agencia='"+agencia+"' ")
-		porcentaje= cursor.fetchone()[0]
+		cursor= conexion.execute("SELECT (((sum(va.valor_actual_venta)/sum(va.valor_anterior_venta))*100)-100), (((sum(va.valor_actual_venta)/sum(va.valor_anterior_estimado))*100)-100) from VentasAgencias va where va.agencia='"+agencia+"' ")
+		arr= cursor.fetchone()
+		venta= arr[0] 
+		estimado= arr[1]
 		
-		return porcentaje
+		salida= "{0:.2f}".format(venta)+"|"+"{0:.2f}".format(estimado)		
+		return str(salida)
 	except Error as e:
 		print(e)
-	return 0
+	return "0|0"
 
 def obtener_lista_clientes(conexion,agencia):	
 	try:		

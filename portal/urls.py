@@ -5,16 +5,16 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('login', views.login, name='login'),    
+    path('logout', views.logout, name='logout'),
     path('autentica', views.autentica, name='autentica'),
    	path('principal', views.principal, name='principal'),
    	path('ventas_agencias', views.ventas_agencias, name='ventas_agencias'),
    	path('indicador', views.indicador, name='indicador'), 
-	path('obtener_clientes', views.obtener_clientes, name='obtener_clientes'),     	
+	  path('obtener_clientes', views.obtener_clientes, name='obtener_clientes'),     	
    	path('indicador', views.indicador, name='indicador'),   	
-	path('indicador_2', views.indicador_2, name='indicador_2'),  
+	  path('indicador_2', views.indicador_2, name='indicador_2'),  
    	path('ventas_categorias', views.ventas_categorias, name='ventas_categorias'),
    	path('obtener_agencias', views.obtener_agencias, name='obtener_agencias'),   
-   	path('actual_estimado_categorias', views.actual_estimado_categorias, name='actual_estimado_categorias'),   
-    #url(r'^path/to/url', TemplateView.as_view(template_name='paginas/index.html')),
+   	path('actual_estimado_categorias', views.actual_estimado_categorias, name='actual_estimado_categorias'),       
 ]
 
