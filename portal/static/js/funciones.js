@@ -17,7 +17,8 @@ function login(){
 
 function valoresIniciales(){	
   obtenerAgencias(); // con datos
-	obtener_ventas_categorias(false);	// con datos
+  obtener_ventas_categorias2(); // con datos
+	//obtener_ventas_categorias(false);	// con datos
 	obtener_ventas_agencias(); // con datos	
 	mostrarMapaInicial();
 }
@@ -170,6 +171,75 @@ function obtenerClientes(agencia){
 /********************************************FIN GOOGLE MAPS***********************************************/
 /**********************************************************************************************************/
 /**********************************************************************************************************/
+
+
+
+function obtener_ventas_categorias2(){
+    var request;    
+    if (window.XMLHttpRequest) {
+        request = new window.XMLHttpRequest();
+    } 
+    else {
+        request = new window.ActiveXObject("Microsoft.XMLHTTP");
+    }
+    
+    request.open("GET", "obtener_lista_categorias", true);
+    request.send();
+    
+    request.onreadystatechange = function(){
+        if (request.readyState == 4 && request.status == 200){
+            var arr= request.responseText.split("|");
+
+            barras2("graficas",arr[0],arr[1]);
+        }
+    }
+}
+
+function barras2(container,categorias,series){ 
+
+    Highcharts.chart(container, {
+      chart: {
+          type: 'bar'
+      },
+      title: {
+          text: 'Ventas por Categoría'
+      },
+      xAxis: {
+          //categories: ['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+          categories: eval(categorias.toString())
+      },
+      yAxis: {
+          min: 0,
+          title: {
+              text: 'Ventas'
+          }
+      },
+      legend: {
+          reversed: true
+      },
+      plotOptions: {
+          series: {
+              stacking: 'normal'
+          }
+      },
+      series: eval(series.toString())
+      /*series: [
+        {
+            name: 'John',
+            data: [5, 3, 4, 7, 2,5, 3, 4, 7, 2,4,5]
+        }, 
+        {
+            name: 'Jane',
+            data: [2, 2, 3, 2, 1,5, 3, 4, 7, 2,4,5]
+        }, 
+        {
+            name: 'Joe',
+            data: [3, 4, 4, 2, 5,5, 3, 4, 7, 2,7,8]
+        }
+      ]*/
+  });
+}
+
 
 function obtener_ventas_categorias(horizontal){
     var request;    

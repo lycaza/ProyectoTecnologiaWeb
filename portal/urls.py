@@ -15,6 +15,7 @@ urlpatterns = [
 	  path('indicador_2', views.indicador_2, name='indicador_2'),  
    	path('ventas_categorias', views.ventas_categorias, name='ventas_categorias'),
    	path('obtener_agencias', views.obtener_agencias, name='obtener_agencias'),   
-   	path('actual_estimado_categorias', views.actual_estimado_categorias, name='actual_estimado_categorias'),       
+   	path('actual_estimado_categorias', views.actual_estimado_categorias, name='actual_estimado_categorias'), 
+    path('obtener_lista_categorias', views.obtener_lista_categorias, name='obtener_lista_categorias'),         
 ]
 

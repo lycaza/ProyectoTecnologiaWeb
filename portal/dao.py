@@ -58,6 +58,7 @@ def obtener_indicador(conexion,agencia):
 		print(e)
 	return "0|0"
 
+
 def obtener_lista_clientes(conexion,agencia):	
 	try:		
 		maximo=100
@@ -106,13 +107,30 @@ def obtener_categorias(conexion):
 	try:
 		cursor = conexion.execute(" select distinct va.categoria"+
 								  " from VentasAgencias va"+								  
+								  " order by va.categoria ")
+		
+		salida= ""
+		for row in cursor:
+			salida+="'"+str(row[0])+"',"
+		
+		salida= salida[:-1]
+		return salida
+	except Error as e:
+		print(e)
+	return ""
+
+
+def obtener_agencias(conexion):
+	try:
+		cursor = conexion.execute(" select distinct va.agencia"+
+								  " from VentasAgencias va"+								  
 								  " order by va.agencia ")
 		
 		salida= ""
 		for row in cursor:
-			salida+=str(row[0])+","
+			salida+="'"+str(row[0])+"',"
 		
-		salida= salida[:-3]
+		salida= salida[:-1]
 		return salida
 	except Error as e:
 		print(e)
@@ -121,29 +139,36 @@ def obtener_categorias(conexion):
 
 def obtener_ventas_categorias(conexion):
 	try:
-		#{ data : [[1,30],[2,15],[3,20],[4,22],[5,12],] , label : 'Categoria 1' },
-		strcategorias= obtener_categorias(conexion)
-		lscat= strcategorias.split(",")
+		# {             data : [[1,30],[2,15],[3,20],[4,22],[5,12],] , label : 'Categoria 1'},
+		#[{name: 'John',data: [5, 3, 4, 7, 2,5, 3, 4, 7, 2,4,5]}]
+
+		stragencias= obtener_agencias(conexion)
+		lsag= stragencias.split(",")
 
 		salida= "["
-		for cat in lscat:
+		for agencia in lsag:
 
-			salida+= "{data:"
-			cursor = conexion.execute(" select va.agencia,sum(va.valor_actual_venta)"+
-									  " from VentasAgencias va where va.categoria='"+cat+"'"+		
-									  "	group by va.agencia"+						  
-									  " order by va.agencia ")
+			salida+= "{name:"+agencia+",data:"
+			cursor = conexion.execute(" select va.categoria,sum(va.valor_actual_venta)"+
+									  " from VentasAgencias va where va.agencia="+agencia+""+		
+									  "	group by va.categoria"+						  
+									  " order by va.categoria ")
 		
-			i=1		
+			
 			salida+="["
 			for row in cursor:
-				salida+="["+str(i)+","+str(row[1])+"],"
-				i= i+1
-			salida+="],label:'"+cat+"'},"
+				#salida+="["+str(i)+","+str(row[1])+"]," {0:.2f}
+				#salida+=str(row[1])+","
+				salida+="{0:.2f},".format(row[1])
+				
+			salida+="]},"
 		
 		salida+= "]"
 		
-		return salida
+
+		strsalida= "["+obtener_categorias(conexion)+"]|"+salida
+
+		return strsalida
 	except Error as e:
 		print(e)
 	return ""

@@ -99,3 +99,10 @@ def obtener_clientes(request):
 	conn.close()
 
 	return HttpResponse(data)
+
+def obtener_lista_categorias(request):	
+	conn = create_connection('proyecto.sqlite3')
+	data= obtener_ventas_categorias(conn)	
+	conn.close()
+
+	return HttpResponse(data)
