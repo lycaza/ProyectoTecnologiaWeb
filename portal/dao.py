@@ -28,15 +28,25 @@ def verifica(conexion,usuario,clave):
 
 def obtener_ventas_agencias(conexion):
 	try:
+
+		#data:[{name: 'Microsoft Internet Explorer',y: 56.33}]
 		cursor = conexion.execute(" select va.agencia, sum(va.valor_actual_venta)"+
 								  " from VentasAgencias va"+
 								  "	group by va.agencia"+
 								  " order by va.agencia ")
 		
+		sliced= ""
 		salida= "["
 		for row in cursor:
-			salida+="{data:[[0,"+str(row[1])+"]],label:'"+row[0]+"'},"
+			#salida+="{data:[[0,"+str(row[1])+"]],label:'"+row[0]+"'},"
+			if row[0]=='GUAYAQUIL':
+				sliced= ",sliced: true,selected: true"
+			else:
+				sliced= ""
 
+			salida+="{name:'"+row[0]+"',y:"+str(row[1])+sliced+"},"
+
+		salida= salida[:-1]
 		salida+="]"
 
 		return salida
@@ -166,8 +176,7 @@ def obtener_ventas_categorias(conexion):
 		salida+= "]"
 		
 
-		strsalida= "["+obtener_categorias(conexion)+"]|"+salida
-
+		strsalida= "["+obtener_categorias(conexion)+"]|"+salida		
 		return strsalida
 	except Error as e:
 		print(e)
@@ -205,47 +214,55 @@ def obtener_lista_agencias(conexion):
 
 def obtener_actual_estimado_categorias(conexion,agencia):
 	try:
-		#categorias= categorias[:-3]
-		
+				
+		#{name: 'Tokyo',marker: {symbol: 'square'},data: [7.0, 6.9, 13.9, 9.6]}
 		
 		#anterior
 		data= "["
-		cursor = conexion.execute(" select va.categoria,sum(va.valor_anterior_venta),sum(va.valor_actual_venta),sum(va.valor_actual_estimado)"+
+		cursor = conexion.execute(" select va.categoria,sum(va.valor_anterior_venta)"+
 								  " from VentasAgencias va where va.agencia='"+agencia+"'"+										  				  
 								  " group by va.categoria order by va.categoria ")
-		j=1
-		data+="{data:["
+		
+		data+="{name:'Venta Anterior',marker: {symbol: 'square'},data:["
 		
 		for row in cursor:
-			data+="["+str(j)+","+str(row[1])+"],"			
-			j= j+1			
-		data+="],label:'Venta Anterior'},"
+			data+=str(row[1])+","			
+		
+		data= data[:-1]			
+		data+="]},"
 
 		#actual
-		cursor = conexion.execute(" select va.categoria,sum(va.valor_anterior_venta),sum(va.valor_actual_venta),sum(va.valor_actual_estimado)"+
+		cursor = conexion.execute(" select va.categoria,sum(va.valor_actual_venta)"+
 								  " from VentasAgencias va where va.agencia='"+agencia+"'"+										  				  
 								  " group by va.categoria order by va.categoria ")
-		j=1
-		data+="{data:["
+		
+		data+="{name:'Venta Actual',marker: {symbol: 'square'},data:["
+		
 		for row in cursor:
-			data+="["+str(j)+","+str(row[2])+"],"
-			j= j+1			
-		data+="],label:'Venta Actual'},"
+			data+=str(row[1])+","			
+		
+		data= data[:-1]			
+		data+="]},"
 
 		#estimado
-		cursor = conexion.execute(" select va.categoria,sum(va.valor_anterior_venta),sum(va.valor_actual_venta),sum(va.valor_actual_estimado)"+
+		cursor = conexion.execute(" select va.categoria,sum(va.valor_actual_estimado)"+
 								  " from VentasAgencias va where va.agencia='"+agencia+"'"+										  				  
 								  " group by va.categoria order by va.categoria ")
-		j=1
-		data+="{data:["
+		
+		data+="{name:'Venta Estimada',marker: {symbol: 'square'},data:["
+		
 		for row in cursor:
-			data+="["+str(j)+","+str(row[3])+"],"
-			j= j+1			
-		data+="],label:'Venta Estimada'}"
+			data+=str(row[1])+","			
+		
+		data= data[:-1]			
+		data+="]}"		
 		data+="]"
 
 		print(data)
-		return data
+		#return data
+
+		strsalida= "["+obtener_categorias(conexion)+"]|"+data
+		return strsalida		
 	except Error as e:
 		print(e)
 	return ""

@@ -17,7 +17,7 @@ function login(){
 
 function valoresIniciales(){	
   obtenerAgencias(); // con datos
-  obtener_ventas_categorias2(); // con datos
+  obtener_ventas_categorias(); // con datos
 	//obtener_ventas_categorias(false);	// con datos
 	obtener_ventas_agencias(); // con datos	
 	mostrarMapaInicial();
@@ -174,7 +174,7 @@ function obtenerClientes(agencia){
 
 
 
-function obtener_ventas_categorias2(){
+function obtener_ventas_categorias(){
     var request;    
     if (window.XMLHttpRequest) {
         request = new window.XMLHttpRequest();
@@ -187,15 +187,14 @@ function obtener_ventas_categorias2(){
     request.send();
     
     request.onreadystatechange = function(){
-        if (request.readyState == 4 && request.status == 200){
+        if (request.readyState == 4 && request.status == 200){ 
             var arr= request.responseText.split("|");
-
-            barras2("graficas",arr[0],arr[1]);
+            barras("graficas",arr[0],arr[1]);
         }
     }
 }
 
-function barras2(container,categorias,series){ 
+function barras(container,categorias,series){ 
 
     Highcharts.chart(container, {
       chart: {
@@ -204,8 +203,7 @@ function barras2(container,categorias,series){
       title: {
           text: 'Ventas por Categoría'
       },
-      xAxis: {
-          //categories: ['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+      xAxis: {         
           categories: eval(categorias.toString())
       },
       yAxis: {
@@ -222,52 +220,20 @@ function barras2(container,categorias,series){
               stacking: 'normal'
           }
       },
-      series: eval(series.toString())
-      /*series: [
-        {
-            name: 'John',
-            data: [5, 3, 4, 7, 2,5, 3, 4, 7, 2,4,5]
-        }, 
-        {
-            name: 'Jane',
-            data: [2, 2, 3, 2, 1,5, 3, 4, 7, 2,4,5]
-        }, 
-        {
-            name: 'Joe',
-            data: [3, 4, 4, 2, 5,5, 3, 4, 7, 2,7,8]
-        }
-      ]*/
+      series: eval(series.toString())      
   });
 }
 
 
-function obtener_ventas_categorias(horizontal){
-    var request;    
-    if (window.XMLHttpRequest) {
-        request = new window.XMLHttpRequest();
-    } 
-    else {
-        request = new window.ActiveXObject("Microsoft.XMLHTTP");
-    }
-    
-    request.open("GET", "ventas_categorias", true);
-    request.send();
-    
-    request.onreadystatechange = function(){
-        if (request.readyState == 4 && request.status == 200){
-            barras(document.getElementById("graficas"),horizontal,request.responseText);
-        }
-    }
-}
 
-function barras(container, horizontal,data) { 
+/*function barras(container, horizontal,data) { 
 	var graph = Flotr.draw(
 	  	container,
 	  	eval(data.toString()), 
   		{
   	    	legend : {
   	        	backgroundColor : '#D2E8FF', // Light blue 
-  	        	position : 'nw',/*se-nw*/
+  	        	position : 'nw',
   	    	},
   		    bars : {
   		      show : true,
@@ -283,7 +249,7 @@ function barras(container, horizontal,data) {
   		    }
   	  	}
   	);
-}
+}*/
 
 
 
@@ -302,15 +268,55 @@ function obtener_actual_estimado_categorias(agencia){
     
     request.onreadystatechange = function(){
         if (request.readyState == 4 && request.status == 200){
-            basic_legend(document.getElementById("graficas"),request.responseText);
+            var arr= request.responseText.split("|");
+            spline("graficas",arr[0],arr[1]);
         }
     }
 }
 
+function spline(container,categorias,series) {
+    Highcharts.chart(container, {
+      chart: {
+        type: 'spline'
+      },
+      title: {
+        text: 'Proyecciones de Ventas'
+      },
+      subtitle: {
+        text: ''
+      },
+      xAxis: {        
+        categories: eval(categorias.toString())
+      },
+      yAxis: {
+        title: {
+          text: 'Ventas'
+        },
+        labels: {
+          formatter: function () {
+            return this.value ;
+          }
+        }
+      },
+      tooltip: {
+        crosshairs: true,
+        shared: true
+      },
+      plotOptions: {
+        spline: {
+          marker: {
+            radius: 4,
+            lineColor: '#666666',
+            lineWidth: 1
+          }
+        }
+      },
+      series: eval(series.toString())      
+    });
+  }
 
-function basic_legend(container,data) {
-  
 
+/*function basic_legend(container,data) {
   // Draw graph
   graph = Flotr.draw(container, eval(data.toString()), {
     legend : {
@@ -320,7 +326,7 @@ function basic_legend(container,data) {
     },
     HtmlText : false
   });
-}
+}*/
 
 
 
@@ -339,12 +345,46 @@ function obtener_ventas_agencias(){
     
     request.onreadystatechange = function(){
         if (request.readyState == 4 && request.status == 200){
-            pie(document.getElementById("indicadores"),request.responseText);
+            pie("indicadores",request.responseText);
         }
     }
 }
 
+
 function pie(container,data) {    
+  Highcharts.chart(container, {
+    chart: {
+      plotBackgroundColor: null,
+      plotBorderWidth: null,
+      plotShadow: false,
+      type: 'pie'
+    },
+    title: {
+      text: 'Ventas por Agencia'
+    },
+    tooltip: {
+      pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: false
+        },
+        showInLegend: true
+      }
+    },
+    series: [{
+      name: 'Ventas',
+      colorByPoint: true,
+      data: eval(data.toString())      
+    }]
+  });
+}
+
+
+/*function pie(container,data) {    
   graph = Flotr.draw(
   	container, 
     eval(data.toString()),
@@ -366,8 +406,7 @@ function pie(container,data) {
       backgroundColor : '#D2E8FF'
     }
   });
-
-}
+}*/
 
 
 function obtener_indicador(agencia){
